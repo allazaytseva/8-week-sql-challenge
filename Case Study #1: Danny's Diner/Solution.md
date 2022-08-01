@@ -90,6 +90,62 @@ Customer B: curry
 Customer C: ramen
 
 
+4. What is the most purchased item on the menu and how many times was it purchased by all customers?
+
+````sql
+SELECT COUNT(s.product_id) AS most_purchased, 
+ m.product_name, m.product_id
+FROM sales s JOIN menu m ON s.product_id = m.product_id
+GROUP BY s.product_id, m.product_name
+ORDER BY most_purchased DESC
+````
+
+|most_purchased|product_name|product_id|
+--------------|------------|----------|
+|             8|ramen       |         3|
+|             4|curry       |         2|
+|             3|sushi       |         1|
+             
+
+
+#### Comment: 
+We are using a **COUNT** function to count how many items of each dish were purchased by every customer.
+
+#### Answer: 
+Ramen; it was purchased 8 times.
+
+
+5.  Which item was the most popular for each customer?
+
+````sql
+WITH pop_item AS (
+SELECT m.product_name, s.customer_id, COUNT(m.product_id) AS order_count,
+DENSE_RANK() OVER(PARTITION BY s.customer_id
+ORDER BY COUNT(m.product_id)DESC) AS order_rank 
+FROM sales s 
+JOIN menu m 
+ON s.product_id = m.product_id
+GROUP BY s.customer_id, m.product_name
+)
+SELECT product_name, customer_id, order_count
+FROM pop_item
+WHERE order_rank = 1;
+````
+product_name|customer_id|order_count|
+------------|-----------|-----------|
+ramen       |A          |          3|
+sushi       |B          |          2|
+ramen       |B          |          2|
+curry       |B          |          2|
+ramen       |C          |          3|
+
+
+#### Comment: 
+First we are creating a temp table to rank the total purchased items by every customer and then finding out what item was the most popular for each customer. 
+
+#### Answer: 
+Customer A and C prefer ramen, while customer B likes all 3 dishes.
+
 
 
 

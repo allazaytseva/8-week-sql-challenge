@@ -25,6 +25,79 @@ Customer B: $74
 Customer C: $36
 
 
+
+2. How many days has each customer visited the restaurant?
+
+````sql
+SELECT customer_id,  COUNT (DISTINCT order_date)
+FROM sales 
+GROUP BY customer_id
+````
+
+
+customer_id|COUNT (DISTINCT order_date)|
+-----------|---------------------------|
+A          |                          4|
+B          |                          6|
+C          |                          2|
+
+#### Comment: 
+It is important here to use **COUNT(DISTINCT ...)** to find the number of days each customer visited the restaurant. If we don't use **DISTINCT** we might end up with a larger number as customers could visit the restaurant more than once. 
+
+#### Answer: 
+Customer A: 4
+
+Customer B: 6
+
+Customer C: 2
+
+
+3.  What was the first item from the menu purchased by each customer?
+
+
+````sql
+WITH ordered_sales AS (
+SELECT s.customer_id, s.order_date, m.product_name,
+DENSE_RANK () OVER (PARTITION BY s.customer_id 
+ORDER BY s.order_date) AS order_rank
+FROM sales s
+JOIN menu m 
+ON s.product_id = m.product_id)
+
+SELECT  customer_id, product_name
+FROM ordered_sales
+WHERE order_rank = 1
+GROUP BY customer_id, product_name;
+````
+
+customer_id|product_name|
+-----------|------------|
+A          |curry       |
+A          |sushi       |
+B          |curry       |
+C          |ramen       |
+
+#### Comment: 
+
+First we've created a common table expression (CTE) that acts as a temp table. It will help us rank order dates of every customer. After that we will filter out everything except for when ```order_rank``` is 1. 
+
+#### Answer:
+
+Customer A: curry and sushi
+
+Customer B: curry
+
+Customer C: ramen
+
+
+
+
+
+
+
+
+
+
 ### Bonus Questions:
 
 11. Join All The Things - Recreate the table with: customer_id, order_date, product_name, price, member (Y/N)

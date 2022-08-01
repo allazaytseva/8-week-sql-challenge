@@ -140,8 +140,4 @@ In particular - the composition and rankings for different interests are provide
 
 Danny has asked for your assistance to analyse aggregated metrics for an example client and provide some high level insights about the customer list and their interests.
 
-### Entity Relationship Diagram
 
-
-
-***

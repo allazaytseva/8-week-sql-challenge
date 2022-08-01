@@ -1,7 +1,7 @@
 
-### Case Study Questions
+## Case Study Questions
 
-1. What is the total amount each customer spent at the restaurant?
+### 1. What is the total amount each customer spent at the restaurant?
 
 ````sql
 SELECT s.customer_id, m.price,  SUM (m.price)
@@ -24,9 +24,10 @@ Customer B: $74
 
 Customer C: $36
 
+_______________________________________________________________________________________________________________________________________________________
 
 
-2. How many days has each customer visited the restaurant?
+### 2. How many days has each customer visited the restaurant?
 
 ````sql
 SELECT customer_id,  COUNT (DISTINCT order_date)
@@ -52,7 +53,11 @@ Customer B: 6
 Customer C: 2
 
 
-3.  What was the first item from the menu purchased by each customer?
+_______________________________________________________________________________________________________________________________________________________
+
+
+
+### 3.  What was the first item from the menu purchased by each customer?
 
 
 ````sql
@@ -90,7 +95,10 @@ Customer B: curry
 Customer C: ramen
 
 
-4. What is the most purchased item on the menu and how many times was it purchased by all customers?
+_______________________________________________________________________________________________________________________________________________________
+
+
+### 4. What is the most purchased item on the menu and how many times was it purchased by all customers?
 
 ````sql
 SELECT COUNT(s.product_id) AS most_purchased, 
@@ -115,7 +123,11 @@ We are using a **COUNT** function to count how many items of each dish were purc
 Ramen; it was purchased 8 times.
 
 
-5.  Which item was the most popular for each customer?
+_______________________________________________________________________________________________________________________________________________________
+
+
+
+### 5.  Which item was the most popular for each customer?
 
 ````sql
 WITH pop_item AS (
@@ -146,6 +158,9 @@ First we are creating a temp table to rank the total purchased items by every cu
 #### Answer: 
 Customer A and C prefer ramen, while customer B likes all 3 dishes.
 
+_______________________________________________________________________________________________________________________________________________________
+
+
 
 
 
@@ -156,7 +171,7 @@ Customer A and C prefer ramen, while customer B likes all 3 dishes.
 
 ### Bonus Questions:
 
-11. Join All The Things - Recreate the table with: customer_id, order_date, product_name, price, member (Y/N)
+### 11. Join All The Things - Recreate the table with: customer_id, order_date, product_name, price, member (Y/N)
 
 
 ````sql
@@ -187,3 +202,10 @@ SELECT s.customer_id, s.order_date, m.product_name, m.price, m2.join_date,
 |C          | 2021-01-01 | ramen       |   12| NULL     |N               |
 |C          | 2021-01-01 | ramen       |   12| NULL     |N               |
 |C          | 2021-01-07 | ramen       |   12| NULL     |N               |
+
+
+
+_______________________________________________________________________________________________________________________________________________________
+
+
+

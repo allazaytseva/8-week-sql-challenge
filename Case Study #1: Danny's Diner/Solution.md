@@ -234,6 +234,7 @@ Customer A: sushi and curry, customer B: sushi
 
 _______________________________________________________________________________________________________________________________________________________
 
+
 ### 8. What is the total items and amount spent for each member before they became a member?
 
 ````sql
@@ -255,6 +256,43 @@ Using **COUNT** and **SUM** functions and filtering out order dates after custom
 
 Customer A spent $25 and bought 2 items;
 Customer B spent $40 on 3 items.
+
+
+_______________________________________________________________________________________________________________________________________________________
+
+### 9. If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
+ 
+````sql 
+ WITH food_points AS (
+ 
+ SELECT *,
+ CASE WHEN product_id = 1 THEN price*20 
+ ELSE price*10
+ END AS points
+ FROM menu)
+ 
+ 
+ SELECT s.customer_id, SUM(f.points)
+ FROM food_points f
+ JOIN sales s
+ ON f.product_id = s.product_id
+ GROUP BY s.customer_id
+````
+
+customer_id|SUM(f.points)|
+-----------|-------------|
+A          |          860|
+B          |          940|
+C          |          360|
+
+#### Comment: 
+Creating a temp table and using a **CASE WHEN** function to assign points to ordered items and  sum up the points later. 
+
+
+#### Answer: 
+Customer A: 860, customer B: 940, customer C: 360
+ 
+
 
 
 _______________________________________________________________________________________________________________________________________________________

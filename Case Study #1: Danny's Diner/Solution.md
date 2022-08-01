@@ -292,12 +292,48 @@ Creating a temp table and using a **CASE WHEN** function to assign points to ord
 #### Answer: 
 Customer A: 860, customer B: 940, customer C: 360
  
-
-
-
 _______________________________________________________________________________________________________________________________________________________
 
 
+
+### 10. In the first week after a customer joins the program (including their join date) they earn 2x points on all items, – not just sushi — how many points do customer A and B have at the end of January?
+ 
+ ````sql
+ WITH dates_cte AS (
+
+  SELECT *, 
+      DATE( join_date, '+6 days') AS join_week, 
+      DATE('2021-01-01','+1 month','-1 day') AS last_date
+   FROM members m)
+
+  SELECT s.customer_id, d.last_date, s.order_date, d.join_week,
+  SUM(CASE  WHEN 	s.product_id = 1 THEN m.price*20
+  WHEN s.order_date BETWEEN join_date AND join_week THEN m.price*20
+  ELSE m.price*10 END) AS points
+  
+  FROM menu m
+  JOIN sales s 
+  ON m.product_id = s.product_id 
+  JOIN dates_cte d
+  ON d.customer_id = s.customer_id
+  WHERE s.order_date < d.last_date
+  GROUP BY s.customer_id
+````
+
+customer_id|last_date |order_date|join_week |points|
+-----------|----------|----------|----------|------|
+A          |2021-01-31|2021-01-01|2021-01-13|  1370|
+B          |2021-01-31|2021-01-01|2021-01-15|   820|
+
+
+#### Comment: 
+First we are creating a temp table ```dates_cte``` to handle the date part of the question. After that, we are using **SUM** and **CASE WHEN** to assign points to the ordered items and then sum them up. 
+
+#### Answer: 
+A: 1370, B: 820
+
+
+_______________________________________________________________________________________________________________________________________________________
 
 
 

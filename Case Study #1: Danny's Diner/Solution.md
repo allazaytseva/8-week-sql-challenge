@@ -160,9 +160,104 @@ Customer A and C prefer ramen, while customer B likes all 3 dishes.
 
 _______________________________________________________________________________________________________________________________________________________
 
+### 6. Which item was purchased first by the customer after they became a member?
+
+````sql
+WITH first_item AS (
+SELECT s.customer_id, s.order_date, m.join_date, s.product_id,
+DENSE_RANK () OVER (PARTITION BY s.customer_id 
+ORDER BY s.order_date) AS order_date_rank
+FROM sales s
+JOIN members m 
+ON s.customer_id = m.customer_id
+WHERE s.order_date >= m.join_date)
+
+SELECT o.customer_id, m2.product_name, o.order_date, o.product_id
+FROM menu m2
+JOIN first_item o 
+ON o.product_id = m2.product_id
+WHERE order_date_rank = 1
+ORDER BY customer_id
+
+````
+
+customer_id|product_name|order_date|product_id|
+-----------|------------|----------|----------|
+A          |curry       |2021-01-07|         2|
+B          |sushi       |2021-01-11|         1|
+
+#### Comment: 
+Creating a temp table to rank order dates and filtering out all the dates when the customers were not members yet. After that we are interested in the items with ```order_date_rank``` equal 1. 
+
+#### Answer: 
+Customer A's first order is curry, B's - sushi. 
 
 
+_______________________________________________________________________________________________________________________________________________________
 
+
+### 7. Which menu item(s) was purchased just before the customer became a member and when?
+ 
+ ````sql
+ WITH before_join AS (
+ 
+ SELECT s.customer_id, s.order_date, m.join_date, s.product_id,
+ DENSE_RANK () OVER(PARTITION BY s.customer_id
+ ORDER BY s.order_date DESC) AS order_rank
+ FROM sales s
+ JOIN members m 
+ ON s.customer_id = m.customer_id
+ WHERE m.join_date>s.order_date )
+ 
+ SELECT m2.product_name, b.order_date, b.join_date, b.order_rank, b.customer_id
+ 
+ FROM menu m2
+ JOIN before_join b
+ON m2.product_id = b.product_id
+WHERE order_rank = 1
+ORDER BY customer_id
+````
+
+product_name|order_date|join_date |order_rank|customer_id|
+------------|----------|----------|----------|-----------|
+sushi       |2021-01-01|2021-01-07|         1|A          |
+curry       |2021-01-01|2021-01-07|         1|A          |
+sushi       |2021-01-04|2021-01-09|         1|B          |
+
+
+#### Comment:
+First we are going to create a temp table and rank the order dates and filter out all the dates after the customers became members. After that we going to look at the items that were purchased right before the customers became members. 
+
+#### Answer: 
+Customer A: sushi and curry, customer B: sushi
+
+
+_______________________________________________________________________________________________________________________________________________________
+
+### 8. What is the total items and amount spent for each member before they became a member?
+
+````sql
+SELECT s.customer_id, COUNT (s.product_id), SUM (m.price), e.join_date, s.order_date
+FROM ((menu m JOIN sales s ON m.product_id = s.product_id) JOIN members e ON e.customer_id = s.customer_id)
+WHERE s.order_date < e.join_date
+GROUP BY s.customer_id
+````
+customer_id|COUNT (s.product_id)|SUM (m.price)|join_date |order_date|
+-----------|--------------------|-------------|----------|----------|
+A          |                   2|           25|2021-01-07|2021-01-01|
+B          |                   3|           40|2021-01-09|2021-01-04|
+
+#### Comment:
+Using **COUNT** and **SUM** functions and filtering out order dates after customers became members. 
+
+
+#### Answer: 
+
+Customer A spent $25 and bought 2 items;
+Customer B spent $40 on 3 items.
+
+
+_______________________________________________________________________________________________________________________________________________________
 
 
 

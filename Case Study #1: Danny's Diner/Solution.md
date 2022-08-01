@@ -1,4 +1,28 @@
 
+### Case Study Questions
+
+1. What is the total amount each customer spent at the restaurant?
+
+````sql
+SELECT s.customer_id, m.price,  SUM (m.price)
+FROM menu m JOIN sales s 
+ON m.product_id = s.product_id 
+GROUP BY customer_id
+ORDER BY s.customer_id 
+````
+
+|customer_id |price| SUM (m.price)|
+|----------- | ---- | ----------- |
+|A           |  10|         76|
+|B           |  10|         74|
+|C           |  12|         36|
+
+#### Answer: 
+Customer A: $76
+
+Customer B: $74
+
+Customer C: $36
 
 
 ### Bonus Questions:
@@ -31,6 +55,6 @@ SELECT s.customer_id, s.order_date, m.product_name, m.price, m2.join_date,
 |B          | 2021-01-11 | sushi       |   10|2021-01-09|Y               |
 |B          | 2021-01-16 | ramen       |   12|2021-01-09|Y               |
 |B          | 2021-02-01 | ramen       |   12|2021-01-09|Y               |
-|C          | 2021-01-01 | ramen       |   12|          |N               |
-|C          | 2021-01-01 | ramen       |   12|          |N               |
-|C          | 2021-01-07 | ramen       |   12|          |N               |
+|C          | 2021-01-01 | ramen       |   12| NULL     |N               |
+|C          | 2021-01-01 | ramen       |   12| NULL     |N               |
+|C          | 2021-01-07 | ramen       |   12| NULL     |N               |

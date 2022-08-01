@@ -338,7 +338,7 @@ ________________________________________________________________________________
 
 
 
-### Bonus Questions:
+### Bonus Question:
 
 ### 11. Join All The Things - Recreate the table with: customer_id, order_date, product_name, price, member (Y/N)
 
@@ -372,9 +372,6 @@ SELECT s.customer_id, s.order_date, m.product_name, m.price, m2.join_date,
 |C          | 2021-01-01 | ramen       |   12| NULL     |N               |
 |C          | 2021-01-07 | ramen       |   12| NULL     |N               |
 
-
-
-_______________________________________________________________________________________________________________________________________________________
 
 
 

@@ -185,3 +185,10 @@ GROUP BY runner_id
 ORDER BY runner_id;
 ````
 
+|runner_id|count|deliveries|
+--------------|------------|----------|
+|             1|4       |         100|
+|             2|3       |         75|
+|             3|1       |         50|
+
+#### Answer: Runner 1: 100%, runner 2: 75, runner 3: 50

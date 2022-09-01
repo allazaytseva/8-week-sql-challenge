@@ -6,22 +6,38 @@
 SELECT COUNT (order_id) AS pizzas_ordered
 FROM customer_orders1;
 ````
+| pizzas_ordered|
+| ------------- |
+| 14            |
+
 #### Answer: 14
+
 
 ### 2.How many unique customer orders were made?
 ````sql
-SELECT COUNT (DISTINCT order_id)
+SELECT COUNT (DISTINCT order_id) AS unique_customers
 FROM customer_orders1;
 ````
+| unique_customers|
+| ------------- |
+| 10            |
+
 #### Answer: 10
 
 ### 3. How many successful orders were delivered by each runner?
 ````sql
 SELECT runner_id, COUNT(DISTINCT order_id) AS successful_deliveries
-FROM runner_orders
+FROM runner_orders2
 WHERE distance != 'null'
 GROUP BY runner_id;
+
 ````
+|runner_id |successful_deliveries| 
+|----------- | ---- | 
+|1           |  4|        
+|2           |  3|        
+|3           |  1|         
+
 #### Answer: 1: 4, 2: 3, 3: 1
  
 ### 4. How many of each type of pizza was delivered?
@@ -35,6 +51,11 @@ JOIN pizza_names p ON c.pizza_id = p.pizza_id
 WHERE r.distance IS NOT NULL
 GROUP BY p.pizza_name
 ````
+|count |pizza_name| 
+|----------- | ---- | 
+|9          |  Meatlovers|        
+|3           |  Vegetarian|        
+
 #### Answer: Meatlovers: 9, Vegetarian: 3
 
 ### 5. How many Vegetarian and Meatlovers were ordered by each customer?

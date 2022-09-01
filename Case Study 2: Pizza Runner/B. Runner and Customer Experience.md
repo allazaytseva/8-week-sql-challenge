@@ -161,16 +161,16 @@ WHERE distance IS NOT NULL AND duration IS NOT NULL
 GROUP BY order_id, runner_id, distance, hour_of_day
 ORDER BY runner_id, order_id
 ````
-|runner_id|order_id|distance|hour_of_day|
---------------|------------|----------|------|
-|             1|1       |         20|18|
-|             1|2       |         20|19|
-|             1|3       |         13.4|0|
-|             1|10       |         10|18|
-|             2|4      |         23.4|13|
-|             2|7       |         25|21|
-|             2|8      |         23.4|0|
-|             3|5       |         10|21|
+|runner_id|order_id|distance|hour_of_day|avg_speed|
+--------------|------------|----------|------|----|
+|             1|1       |         20|18|37.50|
+|             1|2       |         20|19|44.44|
+|             1|3       |         13.4|0|40.20|
+|             1|10       |         10|18|60.00|
+|             2|4      |         23.4|13|35.10|
+|             2|7       |         25|21|60.00|
+|             2|8      |         23.4|0|93.60|
+|             3|5       |         10|21|40.00|
 
 #### Answer: Runner 1: avg speed varies from 37.5 - 60 km/h, runner 2's - 35.10 - 93.60 km/h, runner 3 - 40km/h
 #### It looks like runner 2 is the fastest, except for his delivery at 1pm – which might be explained by the traffic. 

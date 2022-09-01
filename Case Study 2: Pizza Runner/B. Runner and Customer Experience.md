@@ -119,7 +119,16 @@ FROM runner_orders2 AS r
   WHERE r.pickup_time IS NOT NULL
 GROUP BY c.customer_id
 ````
-(useful function for figuring out data type):
+|customer_id|avg_distance|
+|---------|------------|
+|101|20.00|
+|103|23.40|
+|104|10.00|
+|105|25.00|
+|102|16.73|
+
+Extra:
+useful function for figuring out data type
 
 ````sql
 SELECT pg_typeof(distance)
@@ -129,14 +138,14 @@ FROM runner_orders2
 ### 5. What was the difference between the longest and shortest delivery times for all orders?
 
 ````sql
-SELECT *
-FROM customer_orders1
-SELECT *
-FROM runner_orders2
 
-SELECT MAX(duration)::NUMERIC - MIN (duration)::NUMERIC
+SELECT MAX(duration)::NUMERIC - MIN (duration)::NUMERIC AS difference
 FROM runner_orders2
 ````
+
+|difference|
+|-------|
+|30|
 
 #### Answer: 30min
 
@@ -152,6 +161,16 @@ WHERE distance IS NOT NULL AND duration IS NOT NULL
 GROUP BY order_id, runner_id, distance, hour_of_day
 ORDER BY runner_id, order_id
 ````
+|runner_id|order_id|distance|hour_of_day|
+--------------|------------|----------|------|
+|             1|1       |         20|18|
+|             1|2       |         20|19|
+|             1|3       |         13.4|0|
+|             1|10       |         10|18|
+|             2|4      |         23.4|13|
+|             2|7       |         25|21|
+|             2|8      |         23.4|0|
+|             3|5       |         10|21|
 
 #### Answer: Runner 1: avg speed varies from 37.5 - 60 km/h, runner 2's - 35.10 - 93.60 km/h, runner 3 - 40km/h
 #### It looks like runner 2 is the fastest, except for his delivery at 1pm – which might be explained by the traffic. 

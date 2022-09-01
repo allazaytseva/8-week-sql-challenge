@@ -6,25 +6,25 @@
 SELECT COUNT (order_id) AS pizzas_ordered
 FROM customer_orders1;
 ````
----Answer: 14
+### Answer: 14
 
----2.How many unique customer orders were made?
+### 2.How many unique customer orders were made?
 ````sql
 SELECT COUNT (DISTINCT order_id)
 FROM customer_orders1;
 ````
----Answer: 10
+### Answer: 10
 
----3. How many successful orders were delivered by each runner?
+### 3. How many successful orders were delivered by each runner?
 ````sql
 SELECT runner_id, COUNT(DISTINCT order_id) AS successful_deliveries
 FROM runner_orders
 WHERE distance != 'null'
 GROUP BY runner_id;
 ````
----Answer: 1: 4, 2: 3, 3: 1
+### Answer: 1: 4, 2: 3, 3: 1
  
----4. How many of each type of pizza was delivered?
+### 4. How many of each type of pizza was delivered?
 
 
 ````sql
@@ -35,9 +35,9 @@ JOIN pizza_names p ON c.pizza_id = p.pizza_id
 WHERE r.distance IS NOT NULL
 GROUP BY p.pizza_name
 ````
----Answer: Meatlovers: 9, Vegetarian: 3
+### Answer: Meatlovers: 9, Vegetarian: 3
 
----5. How many Vegetarian and Meatlovers were ordered by each customer?
+### 5. How many Vegetarian and Meatlovers were ordered by each customer?
 ````sql
 SELECT COUNT (c.pizza_id), p.pizza_name, c.customer_id
 FROM customer_orders1 c
@@ -57,7 +57,7 @@ ORDER BY customer_id
  ---                1|Vegetarian|        105|
 
 
----6.What was the maximum number of pizzas delivered in a single order?
+### 6.What was the maximum number of pizzas delivered in a single order?
 
 ````sql
 WITH pizza_count AS(
@@ -72,10 +72,10 @@ SELECT MAX(pizza_per_order)
 FROM pizza_count
 ````
 
----Answer: 3
+### Answer: 3
 
 
----7. For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
+### 7. For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
 
 ````sql
 SELECT 
@@ -96,7 +96,7 @@ GROUP BY c.customer_id
 ORDER BY c.customer_id;
 ````
 
----8. How many pizzas were delivered that had both exclusions and extras?
+### 8. How many pizzas were delivered that had both exclusions and extras?
 
 ````sql
 SELECT 
@@ -114,9 +114,9 @@ AND extras IS NOT NULL
 GROUP BY c.customer_id
 ````
 
----Answer: One pizza had both exclusions and extras 
+### Answer: One pizza had both exclusions and extras 
 
----9.What was the total volume of pizzas ordered for each hour of the day?
+### 9.What was the total volume of pizzas ordered for each hour of the day?
 
 ````sql
 SELECT 
@@ -126,9 +126,9 @@ FROM customer_orders1
 GROUP BY hour_of_day
 ORDER BY hour_of_day
 ````
----Answer: 11h: 1, 13: 3, 18: 3, 19: 1, 21: 3, 23: 3
+### Answer: 11h: 1, 13: 3, 18: 3, 19: 1, 21: 3, 23: 3
 
----10. What was the volume of orders for each day of the week?
+### 10. What was the volume of orders for each day of the week?
 
 ````sql
 SELECT

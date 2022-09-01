@@ -10,7 +10,14 @@ GROUP BY registration_week
 ORDER BY registration_week;
 ````
 
-#### Answer: 4---
+registration_week|runners|
+-----------|---------------------------|
+2021-01-01          |                          2|
+2021-01-08          |                          1|
+2021-01-15         |                          1|
+
+
+#### Answer: 4
 
 ### 2. What was the average time in minutes it took for each runner to arrive at the Pizza Runner HQ to pickup the order?
 
@@ -29,6 +36,10 @@ SELECT
 FROM cte_pickup_minutes;
 ````
 
+|avg_pickup_minutes|
+|----------------|
+|15.63|
+
  #### Answer: ~15 minutes for all of the runners
 
 (without the cte)
@@ -44,6 +55,14 @@ SELECT DISTINCT
   GROUP BY r.runner_id
   ORDER BY runner_id
 ````
+
+|runner_id|pickup_minutes|
+-----------|---------------------------|
+1         |                          15|
+2         |                          23|
+3        |                          10|
+
+
 #### Answer: runner 1: 15 min, runner 2: 23 min, runner 3: 10min
 
 ### 3. Is there any relationship between the number of pizzas and how long the order takes to prepare?
@@ -59,6 +78,11 @@ FROM runner_orders2 AS r
   WHERE r.pickup_time IS NOT NULL
   GROUP BY c.order_id,pickup_minutes) as a
 ````
+
+|correlation|
+|---------|
+|0.83725|
+
 #### Comment: correlation is 0.83 meaning that there's a strong relationship between the number of pizzas and the preparation time
 
  ````sql 
@@ -72,6 +96,18 @@ FROM runner_orders2 AS r
 GROUP BY c.order_id, pickup_minutes
 ORDER BY pickup_minutes, number_of_pizzas
 ````
+
+|order_id|number_of_pizzas|pickup_minutes|
+--------------|------------|----------|
+|             1|1       |         10|
+|             2|1       |         10|
+|             5|1       |         10|
+|             7|1       |         10|
+|             10|2       |         15|
+|             8|1       |         20|
+|             3|2      |         21|
+|             4|3       |         29|
+
 
 ### 4. What was the average distance travelled for each customer?
 

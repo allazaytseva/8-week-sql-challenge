@@ -95,5 +95,5 @@ FROM ratings
 |             7|2      |         food not as expected|
 |             8|5       |         great service|
 |             9|5      |         none|
-|             104       |         delivery guy was 30min late|
+|             10|4       |         delivery guy was 30min late|
 

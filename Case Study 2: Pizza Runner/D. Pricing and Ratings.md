@@ -97,3 +97,31 @@ FROM ratings
 |             9|5      |         none|
 |             10|4       |         delivery guy was 30min late|
 
+
+### 4. Using your newly generated table - can you join all of the information together to form a table which has the following information for successful deliveries? + customer_id + order_id + runner_id + rating + order_time + pickup_time + Time between order and pickup + Delivery duration + Average speed + Total number of pizzas
+
+````sql
+SELECT 
+  c.customer_id,
+  c.order_id,
+  ro.runner_id,
+  r.rating, 
+  c.order_time, 
+  ro.pickup_time::TIMESTAMP AS pickup_time, 
+  DATE_PART('minute', AGE(ro.pickup_time::TIMESTAMP, c.order_time))::INTEGER AS pickup_minutes, 
+  ROUND(AVG(ro.distance::NUMERIC/ro.duration::NUMERIC *60), 2) AS avg_speed, 
+  COUNT (c.order_id) AS number_of_pizzas
+FROM customer_orders1 c 
+INNER JOIN runner_orders2 ro 
+ON c.order_id = ro.order_id
+LEFT JOIN ratings r 
+ON r.order_id = ro.order_id 
+WHERE ro.pickup_time IS NOT NULL
+GROUP BY 
+c.customer_id,
+  c.order_id,
+  ro.runner_id,
+  r.rating, 
+  c.order_time,
+  ro.pickup_time
+  ````

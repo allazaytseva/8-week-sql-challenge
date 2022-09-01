@@ -113,10 +113,10 @@ SELECT
   COUNT (c.order_id) AS number_of_pizzas
   
 FROM customer_orders1 c 
-INNER JOIN runner_orders2 ro 
-ON c.order_id = ro.order_id
-LEFT JOIN ratings r 
-ON r.order_id = ro.order_id 
+  INNER JOIN runner_orders2 ro 
+    ON c.order_id = ro.order_id
+  LEFT JOIN ratings r 
+    ON r.order_id = ro.order_id 
 WHERE ro.pickup_time IS NOT NULL
 
 GROUP BY 

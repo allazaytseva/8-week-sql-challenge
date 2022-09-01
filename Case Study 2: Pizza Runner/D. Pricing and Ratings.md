@@ -19,7 +19,7 @@ WHERE r.distance IS NOT NULL;
 
 #### Answer: 138
 
-### 2. What if there was an additional $1 charge for any pizza extras? + Add cheese is $1 extra
+### 2. What if there was an additional $1 charge for any pizza extras? The conditions from the previous question are still the same: If a Meat Lovers pizza costs $12 and Vegetarian costs $10 and there were no charges for changes - how much money has Pizza Runner made so far if there are no delivery fees?
 
 ````sql
 WITH cte_extras AS(

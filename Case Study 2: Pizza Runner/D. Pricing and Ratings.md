@@ -24,31 +24,32 @@ WHERE r.distance IS NOT NULL;
 ````sql
 WITH cte_extras AS(
 SELECT 
-c.order_id, 
-UNNEST(STRING_TO_ARRAY(c.extras, ','))::INTEGER AS pizza_extras
+  c.order_id, 
+  UNNEST(STRING_TO_ARRAY(c.extras, ','))::INTEGER AS pizza_extras
 FROM customer_orders1 c
-INNER JOIN runner_orders2 r 
-ON c.order_id = r.order_id
+  INNER JOIN runner_orders2 r 
+   ON c.order_id = r.order_id
 WHERE r.distance IS NOT NULL) 
 
 SELECT 
-SUM(revenue)
+  SUM(revenue)
 FROM (
   SELECT
-  SUM(CASE WHEN pizza_extras IS NULL THEN 0
-    ELSE 1 END) AS revenue
+    SUM (
+    CASE WHEN pizza_extras IS NULL THEN 0
+         ELSE 1 END) AS revenue
   FROM cte_extras
   
   UNION ALL
   
   SELECT 
-  SUM(
-  CASE WHEN c.pizza_id = 1 THEN 12
-       WHEN c.pizza_id = 2 THEN 10
-       END) AS revenue
+    SUM (
+    CASE WHEN c.pizza_id = 1 THEN 12
+         WHEN c.pizza_id = 2 THEN 10
+         END) AS revenue
   FROM customer_orders1 c
-  INNER JOIN runner_orders2 r 
-  ON c.order_id = r.order_id
+    INNER JOIN runner_orders2 r 
+      ON c.order_id = r.order_id
   WHERE r.distance IS NOT NULL) as final_revenue
   ````
   |sum|

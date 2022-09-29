@@ -91,11 +91,11 @@ GROUP BY plan_id, plan_name
 WITH 
 next_plan AS
 
-(select *, 
-			LEAD(start_date, 1) OVER(PARTITION BY customer_id ORDER BY start_date, plan_id) next_date
-		from subscriptions
-		where start_date <= '20201231'
-	) 
+(SELECT *, 
+LEAD(start_date, 1) OVER(PARTITION BY customer_id ORDER BY start_date, plan_id) next_date
+FROM subscriptions
+WHERE start_date <= '20201231'
+) 
 		
 SELECT n.plan_id, p.plan_name, COUNT (DISTINCT n.customer_id) as number_customers, 
 ROUND(100*

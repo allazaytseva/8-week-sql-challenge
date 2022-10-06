@@ -296,4 +296,4 @@ ORDER BY u.customer_id, u.start_date
 |… | … | … | … |… |…|
 |51 | 1 | 2020-01-26 | basic monthly | 9.90 | 5|
 |51 | 1 | 2020-02-26| basic monthly  | 9.90 | 6|
-|51 | 3 | 2020-03-09 | pro annual | 199.10 | 7|
+|51 | 3 | 2020-03-09 | pro annual | 189.10 | 7|

@@ -108,7 +108,7 @@ SELECT
 	start_date, 
 	DATE_PART ('mon', AGE (lead_start_date - 1, start_date))::INTEGER AS month_diff
 FROM lead_plans
-WHERE plan_id = 1 AND lead_plan_id IN (2,3) --- first the customer had a basic monthly subscription, and now they upgraded to either pro monthly or annual and we need to consider that upgrade for the correct payment record
+WHERE plan_id = 1 AND lead_plan_id IN (2,3) 
 )
 SELECT customer_id, 
 plan_id, 
@@ -116,5 +116,25 @@ plan_id,
 FROM case_3
 ````
 - ```WHERE plan_id = 1 AND lead_plan_id IN (2,3)``` we're filtering these plans to show that first the customer had a basic monthly subscription, and then the customer upgraded to either pro monthly or pro annual and we need to consider this upgrade for the correct payment record
+
+**Case 4: pro monthly customers who move up to annual plans**
+
+````sql
+WITH case_4 AS (
+SELECT 
+	customer_id,
+	plan_id, 
+	start_date,
+	DATE_PART ('mon', AGE(lead_start_date - 1, start_date))::INTEGER AS month_diff
+FROM lead_plans 
+WHERE plan_id = 2 AND lead_plan_id = 3
+)
+SELECT 
+customer_id, 
+plan_id, 
+(start_date + GENERATE_SERIES(0, month_diff) * INTERVAL '1 month')::DATE AS start_date 
+FROM case_4
+````
+- Same as before, but here we're filtering out the initial plan_id=2 and the next plan_id = 3 which shows the upgrade from a pro monthly plan to a pro annual plan
 
 

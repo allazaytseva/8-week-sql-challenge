@@ -137,4 +137,13 @@ FROM case_4
 ````
 - Same as before, but here we're filtering out the initial plan_id=2 and the next plan_id = 3 which shows the upgrade from a pro monthly plan to a pro annual plan
 
+**Case 5: pro annual customers** 
+Pro annual plan does not need to be broken down into months as the annual payment happens once a year.
 
+````sql
+SELECT customer_id, 
+plan_id, 
+start_date
+FROM lead_p
+WHERE plan_id = 3
+````

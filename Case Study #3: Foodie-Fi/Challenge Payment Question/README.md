@@ -33,9 +33,43 @@ SELECT
 	LEAD(p.plan_id, 1) OVER(PARTITION BY s.customer_id ORDER BY s.start_date) lead_plan_id,
 	p.price AS amount
 FROM subscriptions s
-INNER JOIN plans p ON p.plan_id = s.plan_id
+INNER JOIN plans p ON p.plan_id = s.plan_id 
 WHERE DATE_PART('year', start_date) = 2020
 AND p.plan_id != 0
 		
 		SELECT * from lead_plans
 ````
+
+PART 2.
+
+In his solution, Danny divided all customers in logical groups: 
+- case 1: non churn monthly customers
+- case 2: churn customers
+- case 3: customers who move from basic to pro plans
+- case 4: pro monthly customers who move up to annual plans
+- case 5: annual pro payments
+
+We are going to look at each case separately and after that we'll union all of them in a temp table to use later. 
+
+**Case 1: non-churn monthly users**
+
+````sql
+	WITH case_1 AS (
+	
+	SELECT customer_id,
+	plan_id, 
+	start_date, 
+	DATE_PART ('mon', AGE ('2020-12-31'::DATE, start_date))::INTEGER AS month_diff --- they never canceled their subscription, that's why we're subtracting the start date from the last day of 2020
+	FROM lead_plans 
+	WHERE lead_plan_id IS NULL --- as we mentioned before, null values mean the subscription was not cdhanged in 2020
+	AND plan_id NOT IN (3,4) --- we're not including customers who either canceled their subscriptions (we'll take them as the next case) or switched to the annual pro plan (also in the next case)
+	)
+	---case_1_payments 
+	SELECT 
+	customer_id, plan_id,
+	(start_date + GENERATE_SERIES (0, month_diff) * INTERVAL '1 month')::DATE AS start_date  ---generate_series will help us break down the time the customer is subscribed into months and record the beginning of every month 
+	FROM case_1
+````
+
+
+ 

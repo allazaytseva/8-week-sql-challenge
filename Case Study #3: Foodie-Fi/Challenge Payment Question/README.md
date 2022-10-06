@@ -18,4 +18,24 @@ My solution consists of 3 parts.
 
 #### Part 1. 
 
-First we are going to create a temporary table *lead_plans* that we'll be working with for the rest of the problem. Here, we will run the **LEAD window function** on *start_date* and *plan_id* that will create a table with records of what plans customers have and whether they switch to a different and when. The *null* values mean that the plan hasn't changed. We have filtered out all trial plans (plan_id = 0) as this plan is free and we're not interested in it. 
+First we are going to create a temporary table *lead_plans* that we'll be working with for the rest of the problem. Here, we will run the **LEAD window function** on *start_date* and *plan_id* that will create a table with records of what plans customers have and whether they switch to a different and when. The *null* values mean that the plan hasn't changed. We have filtered out all trial plans (plan_id = 0) as this plan is free and we're not interested in it. We are also only interested in year 2020. 
+
+````sql
+DROP TABLE IF EXISTS lead_plans;
+CREATE TEMP TABLE lead_p AS
+SELECT
+	s.customer_id,
+	s.plan_id,
+	p.plan_name,
+	s.start_date payment_date,
+	s.start_date,
+	LEAD(s.start_date, 1) OVER(PARTITION BY s.customer_id ORDER BY s.start_date) lead_start_date,
+	LEAD(p.plan_id, 1) OVER(PARTITION BY s.customer_id ORDER BY s.start_date) lead_plan_id,
+	p.price AS amount
+FROM subscriptions s
+INNER JOIN plans p ON p.plan_id = s.plan_id
+WHERE DATE_PART('year', start_date) = 2020
+AND p.plan_id != 0
+		
+		SELECT * from lead_plans
+````

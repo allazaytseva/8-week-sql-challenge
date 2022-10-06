@@ -13,7 +13,7 @@ We need to create a table that would contain the detailed information about cust
 
 Here's the solution that was a bit modified and broken down in pieces in case someone else is also sitting down and struggling to understand the code!
 
-My solution consists of 3 parts. 
+My solution consists of 4 parts. 
 
 
 #### Part 1. 
@@ -40,7 +40,7 @@ AND p.plan_id != 0
 		SELECT * from lead_plans
 ````
 
-PART 2.
+#### Part 2.
 
 In his solution, Danny divided all customers in logical groups: 
 - case 1: non churn monthly customers
@@ -144,6 +144,112 @@ Pro annual plan does not need to be broken down into months as the annual paymen
 SELECT customer_id, 
 plan_id, 
 start_date
-FROM lead_p
+FROM lead_plans
 WHERE plan_id = 3
+````
+
+#### Part 4. 
+
+Now we are going to ```UNION``` all of the cases, but before that we need to create a temp table with all these cases as window functions. Here's what we've got: 
+
+````sql
+
+DROP TABLE IF EXISTS union_payments;
+CREATE TEMP TABLE union_payments AS 
+
+WITH case_1 AS (	
+SELECT 
+	customer_id,
+	plan_id, 
+	start_date, 
+	DATE_PART ('mon', AGE ('2020-12-31'::DATE, start_date))::INTEGER AS month_diff 
+FROM lead_plans
+WHERE lead_plan_id IS NULL 
+      AND plan_id NOT IN (3,4) 
+),
+case_1_payments AS (
+SELECT 
+	customer_id, plan_id,
+	(start_date + GENERATE_SERIES (0, month_diff) * INTERVAL '1 month')::DATE AS start_date  
+FROM case_1
+),
+	
+case_2 AS (
+SELECT 
+	customer_id, 
+	plan_id,
+	start_date,
+	DATE_PART ('mon', AGE(lead_start_date - 1, start_date))::INTEGER AS month_diff 
+FROM lead_plans
+WHERE lead_plan_id = 4
+),
+case_2_payments AS (
+SELECT 
+	customer_id, 
+	plan_id,
+	(start_date +GENERATE_SERIES (0, month_diff)*INTERVAL '1 month')::DATE AS start_date 
+FROM case_2
+),
+
+case_3 AS ( 
+SELECT 
+	customer_id, 
+	plan_id, 
+	start_date, 
+	DATE_PART ('mon', AGE (lead_start_date - 1, start_date))::INTEGER AS month_diff
+FROM lead_plans
+WHERE plan_id = 1 
+      AND lead_plan_id IN (2,3) 
+),
+case_3_payments AS(
+SELECT 
+	customer_id, 
+	plan_id, 
+	(start_date + GENERATE_SERIES(0, month_diff)*INTERVAL '1 month' )::DATE as start_date
+FROM case_3
+),
+	
+case_4 AS (
+SELECT 
+	customer_id,
+	plan_id, 
+	start_date,
+	DATE_PART ('mon', AGE(lead_start_date - 1, start_date))::INTEGER AS month_diff
+FROM lead_plans 
+WHERE plan_id = 2 
+      AND lead_plan_id = 3
+),
+
+case_4_payments AS (
+SELECT 
+	customer_id, 
+	plan_id, 
+	(start_date + GENERATE_SERIES(0, month_diff) * INTERVAL '1 month')::DATE AS start_date 
+FROM case_4
+), 
+	
+case_5_payments AS (
+
+SELECT 
+	customer_id, 
+	plan_id, 
+	start_date
+FROM lead_plans
+WHERE plan_id = 3
+)
+
+SELECT * FROM case_1_payments
+UNION 
+SELECT * FROM case_2_payments
+UNION 
+SELECT * FROM case_3_payments
+UNION 
+SELECT * FROM case_4_payments
+UNION 
+SELECT * FROM case_5_payments
+ORDER BY customer_id, start_date
+
+
+SELECT * FROM union_payments
+
 ````

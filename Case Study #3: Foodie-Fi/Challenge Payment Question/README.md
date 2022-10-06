@@ -253,3 +253,25 @@ ORDER BY customer_id, start_date
 SELECT * FROM union_payments
 
 ````
+
+#### Part 4. 
+
+In this part, we are going to make the corrections in the amount that the customers have paid for their plans. What we need to remember is that upgrades from basic to monthly or pro plans are reduced by the current paid amount in that month and start immediately. Upgrades from pro monthly to pro annual are paid at the end of the current billing period and also starts at the end of the month period.
+
+````sql
+
+SELECT 
+	u.customer_id, 
+	u.plan_id, 
+	u.start_date AS payment, 
+	p.plan_name,
+	CASE WHEN u.plan_id IN (2,3) AND (LAG(u.plan_id) OVER (PARTITION BY u.customer_id ORDER BY u.start_date) ) = 1
+		  THEN p.price - 9.90
+		  ELSE p.price END AS amount,
+	RANK () OVER (PARTITION BY u.customer_id ORDER BY u.start_date) AS payment_order
+FROM union_payments u 
+INNER JOIN plans p ON u.plan_id = p.plan_id 
+ORDER BY u.customer_id, u.start_date
+````
+- We are using the ```LAG``` function here to track the change in the subscription. When the customer upgrades from a basic plan to a monthly or pro plans, they get the basic plan cost back and the new plan subscription starts immeditely. 
+- ```RANK () OVER```to keep track of payment orders for each customer. 

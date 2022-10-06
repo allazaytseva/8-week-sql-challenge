@@ -54,22 +54,26 @@ We are going to look at each case separately and after that we'll union all of t
 **Case 1: non-churn monthly users**
 
 ````sql
-	WITH case_1 AS (
+WITH case_1 AS (
 	
-	SELECT customer_id,
+SELECT 
+	customer_id,
 	plan_id, 
 	start_date, 
-	DATE_PART ('mon', AGE ('2020-12-31'::DATE, start_date))::INTEGER AS month_diff --- they never canceled their subscription, that's why we're subtracting the start date from the last day of 2020
-	FROM lead_plans 
-	WHERE lead_plan_id IS NULL --- as we mentioned before, null values mean the subscription was not cdhanged in 2020
-	AND plan_id NOT IN (3,4) --- we're not including customers who either canceled their subscriptions (we'll take them as the next case) or switched to the annual pro plan (also in the next case)
-	)
+	DATE_PART ('mon', AGE ('2020-12-31'::DATE, start_date))::INTEGER AS month_diff 
+FROM lead_plans 
+WHERE lead_plan_id IS NULL --- as we mentioned before, null values mean the subscription was not cdhanged in 2020
+      AND plan_id NOT IN (3,4) --- we're not including customers who either canceled their subscriptions (we'll take them as the next case) or switched to the annual pro plan (also in the next case)
+)
 	---case_1_payments 
-	SELECT 
-	customer_id, plan_id,
-	(start_date + GENERATE_SERIES (0, month_diff) * INTERVAL '1 month')::DATE AS start_date  ---generate_series will help us break down the time the customer is subscribed into months and record the beginning of every month 
-	FROM case_1
+SELECT 
+	customer_id, 
+	plan_id,
+	(start_date + GENERATE_SERIES (0, month_diff) * INTERVAL '1 month')::DATE AS start_date   
+FROM case_1
 ````
-
-
+- We are using ```DATE_PART``` to extract months from the date and ```AGE``` to count the difference in months between the last day of 2020 and customers basic monthly subscription date. We are using the last day of the year since customers never canceled the subscription. 
+- We are filtering out everything in the lead_plan_id column except for the null values, meaning there's no next date or plan subscription for the particular customer in 2020
+- ```plan_id``` is either basic monthly or pro monthly as this is what we are interested in in this case
+- ```GENERATE_SERIES``` will help us break down the time the customer is subscribed into months and record the beginning of every month
  

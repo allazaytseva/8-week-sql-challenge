@@ -286,5 +286,14 @@ ORDER BY u.customer_id, u.start_date
 |1 | 1 | 2020-12-08 | basic monthly | 9.90 | 5|
 |2 | 3 | 2020-09-27| pro annual  | 199.00 | 1|
 |… | … | … | … |… |…|
-
-
+|8 | 1 | 2020-06-18 | basic monthly | 9.90 | 1|
+|8 | 1 | 2020-07-18 | basic monthly | 9.90 | 2|
+|8 | 2 | 2020-08-03| pro monthly  | 10.00 | 3|
+|8 | 2 | 2020-09-03| pro  monthly  | 19.90 | 4|
+|8 | 2 | 2020-10-03 | pro monthly | 19.90 | 5|
+|8 | 2 | 2020-11-03| pro monthly  | 19.90 | 6|
+|8 | 2 | 2020-12-03 | pro monthly | 19.90 | 7|
+|… | … | … | … |… |…|
+|51 | 1 | 2020-01-26 | basic monthly | 9.90 | 5|
+|51 | 1 | 2020-02-26| basic monthly  | 9.90 | 6|
+|51 | 3 | 2020-03-09 | pro annual | 199.10 | 7|

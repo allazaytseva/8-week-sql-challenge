@@ -277,6 +277,8 @@ ORDER BY u.customer_id, u.start_date
 - ```RANK () OVER```to keep track of payment orders for each customer. 
 
 
+There are over 4000 rows in this table, but here's a sneak peek:
+
 |customer_id|plan_id| payment_date| plan_name| amount| payment_order|
 |------|-----|----------|-------|----------|-----|
 |1 | 1 | 2020-08-08 | basic monthly | 9.90 | 1|
@@ -297,3 +299,5 @@ ORDER BY u.customer_id, u.start_date
 |51 | 1 | 2020-01-26 | basic monthly | 9.90 | 1|
 |51 | 1 | 2020-02-26| basic monthly  | 9.90 | 2|
 |51 | 3 | 2020-03-09 | pro annual | 189.10 | 3|
+
+

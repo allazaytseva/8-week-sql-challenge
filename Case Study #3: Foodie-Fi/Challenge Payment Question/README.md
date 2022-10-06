@@ -263,7 +263,7 @@ In this part, we are going to make the corrections in the amount that the custom
 SELECT 
 	u.customer_id, 
 	u.plan_id, 
-	u.start_date AS payment, 
+	u.start_date AS payment_date, 
 	p.plan_name,
 	CASE WHEN u.plan_id IN (2,3) AND (LAG(u.plan_id) OVER (PARTITION BY u.customer_id ORDER BY u.start_date) ) = 1
 		  THEN p.price - 9.90
@@ -275,3 +275,16 @@ ORDER BY u.customer_id, u.start_date
 ````
 - We are using the ```LAG``` function here to track the change in the subscription. When the customer upgrades from a basic plan to a monthly or pro plans, they get the basic plan cost back and the new plan subscription starts immeditely. 
 - ```RANK () OVER```to keep track of payment orders for each customer. 
+
+
+|customer_id|plan_id| payment_date| plan_name| amount| payment_order|
+|------|-----|----------|-------|----------|-----|
+|1 | 1 | 2020-08-08 | basic monthly | 9.90 | 1|
+|1 | 1 | 2020-09-08 | basic monthly | 9.90 | 2|
+|1 | 1 | 2020-10-08| basic monthly  | 9.90 | 3|
+|1 | 1 | 2020-11-08| basic monthly  | 9.90 | 4|
+|1 | 1 | 2020-12-08 | basic monthly | 9.90 | 5|
+|2 | 3 | 2020-09-27| pro annual  | 199.00 | 1|
+|… | … | … | … |… |…|
+
+

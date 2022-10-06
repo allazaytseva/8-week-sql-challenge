@@ -62,8 +62,8 @@ SELECT
 	start_date, 
 	DATE_PART ('mon', AGE ('2020-12-31'::DATE, start_date))::INTEGER AS month_diff 
 FROM lead_plans 
-WHERE lead_plan_id IS NULL --- as we mentioned before, null values mean the subscription was not cdhanged in 2020
-      AND plan_id NOT IN (3,4) --- we're not including customers who either canceled their subscriptions (we'll take them as the next case) or switched to the annual pro plan (also in the next case)
+WHERE lead_plan_id IS NULL 
+      AND plan_id NOT IN (3,4) 
 )
 	---case_1_payments 
 SELECT 
@@ -77,3 +77,23 @@ FROM case_1
 - ```plan_id``` is either basic monthly or pro monthly as this is what we are interested in in this case
 - ```GENERATE_SERIES``` will help us break down the time the customer is subscribed into months and record the beginning of every month
  
+**Case 2: churn customers**
+
+Here we are looking at churn_customers that paid for the subscription before they decided to cancel it
+
+````sql
+
+WITH case_2 AS (
+SELECT customer_id, 
+plan_id,
+start_date,
+DATE_PART ('mon', AGE(lead_start_date - 1, start_date))::INTEGER AS month_diff 
+FROM lead_p
+WHERE lead_plan_id = 4
+) 
+SELECT 
+customer_id, plan_id,
+(start_date +GENERATE_SERIES (0, month_diff)*INTERVAL '1 month')::DATE AS start_date 
+FROM case_2
+````
+- The only difference here is the ```AGE``` function where we are looking at the ```lead_start_date``` and we need to subtract 1 (month) because the customer was still paying for the previous plan and we need to take that into account

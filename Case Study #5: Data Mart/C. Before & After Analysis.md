@@ -81,3 +81,60 @@ FROM cte2
 As we see in the table, sales are still worse 12 weeks after the packaging was changed.
 
 **3. How do the sale metrics for these 2 periods before and after compare with the previous years in 2018 and 2019?**
+
+Here, we'll introduce ``calendar_year`` in the GROUP BY function.
+
+```sql
+---4 weeks before and after for 2018, 2019, 2020
+WITH cte1 AS (
+SELECT week_number, week_date, calendar_year,
+SUM(sales) AS total_sales
+FROM clean_weekly_sales
+WHERE  
+week_number BETWEEN 21 AND 28
+GROUP BY calendar_year, week_date, week_number),
+
+cte2 AS (
+SELECT calendar_year,
+SUM (CASE WHEN week_number BETWEEN 21 AND 24 THEN total_sales END) AS before_sales,
+SUM (CASE WHEN week_number BETWEEN 25 AND 28 THEN total_sales END) AS after_sales
+FROM cte1 
+GROUP BY calendar_year
+)
+
+SELECT *,
+after_sales - before_sales AS sales_diff,
+ROUND((100 * (after_sales - before_sales)/before_sales),2) percentage
+FROM cte2
+```
+
+![Screen Shot 2022-12-08 at 1 37 27 PM](https://user-images.githubusercontent.com/95102899/206572881-f6e1b64d-b49f-4679-b0c1-00e84d146284.png)
+
+---12 weeks before and after for 2018, 2019, 2020
+
+```sql 
+WITH cte1 AS (
+SELECT week_number, week_date, calendar_year,
+SUM(sales) AS total_sales
+FROM clean_weekly_sales
+WHERE  
+week_number BETWEEN 13 AND 36
+GROUP BY calendar_year, week_date, week_number),
+
+cte2 AS (
+SELECT calendar_year,
+SUM (CASE WHEN week_number BETWEEN 13 AND 24 THEN total_sales END) AS before_sales,
+SUM (CASE WHEN week_number BETWEEN 25 AND 36 THEN total_sales END) AS after_sales
+FROM cte1 
+GROUP BY calendar_year
+)
+
+SELECT *,
+after_sales - before_sales AS sales_diff,
+ROUND((100 * (after_sales - before_sales)/before_sales),2) percentage
+FROM cte2
+```
+
+![Screen Shot 2022-12-08 at 1 38 56 PM](https://user-images.githubusercontent.com/95102899/206572967-87d89c2a-55d0-43ee-9393-ea58732d06e9.png)
+
+
